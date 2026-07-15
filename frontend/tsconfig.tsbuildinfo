@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/types.ts","./src/components/layout.tsx","./src/pages/home.tsx","./src/pages/auth/login.tsx","./src/pages/posts/index.tsx","../shared/pocketbase.gen.ts","../shared/types.gen.ts","./vite.config.ts"],"version":"5.9.3"}

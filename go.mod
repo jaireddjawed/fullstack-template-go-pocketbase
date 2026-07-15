@@ -5,6 +5,7 @@ go 1.26.2
 require (
 	github.com/pocketbase/dbx v1.12.0
 	github.com/pocketbase/pocketbase v0.39.6
+	github.com/romsar/gonertia/v2 v2.1.1
 	github.com/spf13/cobra v1.10.2
 )
 

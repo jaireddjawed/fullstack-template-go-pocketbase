@@ -11,6 +11,7 @@ import (
 	"github.com/jaireddjawed/fullstack-template-golang/internal/commands"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/hooks"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/routes"
+	"github.com/jaireddjawed/fullstack-template-golang/internal/web"
 )
 
 // New builds the full PocketBase application used by main.go.
@@ -39,6 +40,13 @@ func Bind(app core.App) {
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		routes.Register(se)
+
+		// Inertia web routes need frontend/root.html; when it's absent
+		// (e.g. backend-only test runs) the API still works fine.
+		if err := web.Register(se); err != nil {
+			se.App.Logger().Warn("inertia web routes disabled", "error", err)
+		}
+
 		return se.Next()
 	})
 }

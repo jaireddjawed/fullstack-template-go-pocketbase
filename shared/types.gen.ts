@@ -36,3 +36,27 @@ export interface PublishPostResponse {
   slug: string;
   published: boolean;
 }
+
+//////////
+// source: web.go
+
+/**
+ * AuthUser is the authenticated user shared with every Inertia page.
+ */
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+}
+/**
+ * PostSummary is a post as rendered by Inertia pages.
+ */
+export interface PostSummary {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  published: boolean;
+  isOwner: boolean;
+  created: string;
+}

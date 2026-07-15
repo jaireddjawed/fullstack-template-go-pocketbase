@@ -1,4 +1,13 @@
-# Fullstack Template — PocketBase × Go
+# Fullstack Template — PocketBase × Go — `react-inertia`
+
+> **This branch:** React + Inertia.js monolith — the Go backend renders the
+> frontend; PocketBase cookie auth. See [docs/frontend-inertia.md](docs/frontend-inertia.md).
+>
+> ```sh
+> make dev                     # backend :8090  (open this one)
+> cd frontend && npm install && npm run dev    # Vite HMR
+> make seed                    # demo@example.com / password123
+> ```
 
 A scaffold for full-stack applications: [PocketBase](https://pocketbase.io) used **as a Go framework** (not as a standalone executable), structured like a conventional backend framework — migrations, seeders, actions, services, routes, hooks, tests, and generated TypeScript types shared with the frontend.
 
