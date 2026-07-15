@@ -1,12 +1,15 @@
 import { Collections } from "@shared/pocketbase.gen";
-import { createServerClient } from "@/lib/server-auth";
+import { createServerClient, currentUser } from "@/lib/server-auth";
 import PublishButton from "@/components/PublishButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function PostsPage() {
   const pb = await createServerClient();
-  const userID = pb.authStore.record?.id;
+  // The backend maps the Clerk session to a PocketBase user record;
+  // /api/app/me tells us which one, so we can compare against post.owner.
+  const user = await currentUser();
+  const userID = user?.id;
 
   // Built-in PocketBase CRUD API; the collection's API rules already limit
   // results to published posts + the viewer's own. Fully typed by

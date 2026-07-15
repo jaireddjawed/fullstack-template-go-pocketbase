@@ -13,7 +13,8 @@ export default async function Home() {
       <h1>Fullstack Template</h1>
       <p>
         Next.js frontend talking to a PocketBase backend extended with Go.
-        Auth uses the PocketBase JS SDK with an httpOnly cookie for SSR.
+        Auth is handled by Clerk; the Go backend verifies Clerk session
+        tokens and maps them to PocketBase user records.
       </p>
       <p>
         {stats.total} posts — {stats.published} published, {stats.drafts}{" "}

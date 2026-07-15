@@ -8,6 +8,7 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
+	"github.com/jaireddjawed/fullstack-template-golang/internal/clerkauth"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/commands"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/hooks"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/routes"
@@ -39,6 +40,16 @@ func Bind(app core.App) {
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		routes.Register(se)
+
+		// Clerk bearer tokens → PocketBase auth records, applied to all
+		// /api/* routes. Disabled (with a warning) when CLERK_SECRET_KEY
+		// is missing, so the backend still runs standalone.
+		if verifier := clerkauth.NewVerifierFromEnv(); verifier != nil {
+			se.Router.BindFunc(clerkauth.Middleware(verifier))
+		} else {
+			se.App.Logger().Warn("CLERK_SECRET_KEY not set — Clerk auth disabled")
+		}
+
 		return se.Next()
 	})
 }

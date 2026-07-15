@@ -1,12 +1,14 @@
-# Fullstack Template — PocketBase × Go — `nextjs`
+# Fullstack Template — PocketBase × Go — `nextjs-clerk`
 
-> **This branch:** Next.js frontend + PocketBase auth (JS SDK with httpOnly
-> cookie for SSR). See [docs/frontend-nextjs.md](docs/frontend-nextjs.md).
+> **This branch:** Next.js frontend + **Clerk auth** — the Go backend
+> verifies Clerk tokens and maps them to PocketBase users. See
+> [docs/auth-clerk.md](docs/auth-clerk.md) and
+> [docs/frontend-nextjs.md](docs/frontend-nextjs.md).
 >
 > ```sh
-> make dev                     # backend :8090
-> cd frontend && npm install && npm run dev    # Next.js :3000 (open this one)
-> make seed                    # demo@example.com / password123
+> cp frontend/.env.example frontend/.env.local   # add your Clerk keys
+> CLERK_SECRET_KEY=sk_test_... make dev          # backend :8090
+> cd frontend && npm install && npm run dev      # Next.js :3000 (open this one)
 > ```
 
 A scaffold for full-stack applications: [PocketBase](https://pocketbase.io) used **as a Go framework** (not as a standalone executable), structured like a conventional backend framework — migrations, seeders, actions, services, routes, hooks, tests, and generated TypeScript types shared with the frontend.

@@ -11,11 +11,12 @@ make dev                        # backend on http://127.0.0.1:8090
 cd frontend && npm run dev      # Next.js on http://localhost:3000
 ```
 
-Open **http://localhost:3000**. First run: `make seed`, then log in with
-`demo@example.com` / `password123`.
+Open **http://localhost:3000** and sign in through Clerk (see
+[auth-clerk.md](auth-clerk.md) for key setup). `make seed` still creates
+demo posts, owned by the native demo user.
 
-Configuration: `NEXT_PUBLIC_POCKETBASE_URL` (see `frontend/.env.example`,
-defaults to `http://127.0.0.1:8090`).
+Configuration: `frontend/.env.example` — `NEXT_PUBLIC_POCKETBASE_URL` plus
+the Clerk keys.
 
 ## Data access patterns
 
@@ -37,23 +38,11 @@ const stats = (await res.json()) as PostStats;   // from @shared/types.gen
 
 See `src/lib/actions.ts#publishPost` for an authenticated example.
 
-## Authentication (PocketBase SDK + httpOnly cookie)
+## Authentication
 
-The SDK's auth store is serialized into an httpOnly `pb_auth` cookie so
-**server components can act as the user** (`src/lib/server-auth.ts`):
-
-- `login` server action (`src/lib/actions.ts`) calls
-  `pb.collection("users").authWithPassword(...)` on the server and persists
-  `{ token, record }` into the cookie.
-- `createServerClient()` rebuilds a per-request SDK client from that cookie —
-  never share a client across requests.
-- `src/middleware.ts` redirects guests away from `/posts` (presence check
-  only; the token is actually validated by PocketBase on use).
-- `logout` deletes the cookie.
-
-Client components that need PocketBase directly (e.g. realtime
-subscriptions) can use `createClient()` — but then auth must be established
-client-side too; prefer server components/actions for anything sensitive.
+Auth on this branch is handled by **Clerk** — see [auth-clerk.md](auth-clerk.md).
+`createServerClient()` attaches the viewer's Clerk session token to every
+PocketBase request, and the Go backend resolves it to a users record.
 
 ## Adding a page
 
@@ -61,4 +50,4 @@ client-side too; prefer server components/actions for anything sensitive.
 2. Fetch data with `createServerClient()` (CRUD) or `fetch` + DTO types
    (custom endpoints).
 3. Mutations go in server actions (`"use server"`), then `revalidatePath`.
-4. Protect routes by extending the `matcher` in `src/middleware.ts`.
+4. Protect routes by extending `isProtected` in `src/middleware.ts`.

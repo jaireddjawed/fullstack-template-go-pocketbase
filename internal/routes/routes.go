@@ -18,6 +18,7 @@ func Register(se *core.ServeEvent) {
 	g := se.Router.Group("/api/app")
 
 	g.GET("/health", actions.Health)
+	g.GET("/me", actions.Me).Bind(apis.RequireAuth())
 	g.GET("/posts/stats", actions.PostStats)
 	g.POST("/posts/{id}/publish", actions.PublishPost).Bind(apis.RequireAuth())
 }

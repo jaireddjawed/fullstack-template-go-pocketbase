@@ -107,6 +107,7 @@ export type PostsRecord = {
 
 export type UsersRecord = {
 	avatar?: FileNameString
+	clerk_id?: string
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean

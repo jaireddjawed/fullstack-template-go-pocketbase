@@ -37,5 +37,16 @@ func FindUserByEmail(app core.App, email string) (*User, error) {
 	return NewUser(record), nil
 }
 
-func (u *User) Name() string        { return u.GetString("name") }
-func (u *User) SetName(name string) { u.Set("name", name) }
+// FindUserByClerkID loads the user linked to a Clerk identity.
+func FindUserByClerkID(app core.App, clerkID string) (*User, error) {
+	record, err := app.FindFirstRecordByData("users", "clerk_id", clerkID)
+	if err != nil {
+		return nil, err
+	}
+	return NewUser(record), nil
+}
+
+func (u *User) Name() string         { return u.GetString("name") }
+func (u *User) SetName(name string)  { u.Set("name", name) }
+func (u *User) ClerkID() string      { return u.GetString("clerk_id") }
+func (u *User) SetClerkID(id string) { u.Set("clerk_id", id) }

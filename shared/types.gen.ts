@@ -36,3 +36,17 @@ export interface PublishPostResponse {
   slug: string;
   published: boolean;
 }
+
+//////////
+// source: auth.go
+
+/**
+ * AuthUser is returned by GET /api/app/me — the PocketBase user record the
+ * authenticated request resolved to (natively or via Clerk).
+ */
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  clerkId: string;
+}

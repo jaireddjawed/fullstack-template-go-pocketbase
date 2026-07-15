@@ -1,16 +1,17 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { AUTH_COOKIE } from "@/lib/pocketbase";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// Presence check only — the token itself is validated by PocketBase on
-// every request that uses it.
-export function middleware(request: NextRequest) {
-  if (!request.cookies.get(AUTH_COOKIE)?.value) {
-    const login = new URL("/login", request.url);
-    return NextResponse.redirect(login);
+const isProtected = createRouteMatcher(["/posts(.*)"]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtected(req)) {
+    await auth.protect();
   }
-  return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/posts/:path*"],
+  matcher: [
+    // Skip Next.js internals and static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
 };
