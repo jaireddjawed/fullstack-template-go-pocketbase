@@ -32,6 +32,7 @@ routes  →  actions  →  services  →  PocketBase ORM (core.App)
 | Routes | `internal/routes` | map URL + method + middleware to an action | `routes/api.php` |
 | Actions | `internal/actions` | parse request, call service, shape HTTP response | single-action controllers |
 | Services | `internal/services` | business logic; no HTTP knowledge | service classes |
+| Models | `internal/models` | typed wrappers over records (PocketBase "record proxies") | Eloquent models |
 | Hooks | `internal/hooks` | react to record events from *any* source (API, dashboard, Go code) | model observers |
 
 Example: `POST /api/app/posts/{id}/publish`
@@ -39,8 +40,26 @@ Example: `POST /api/app/posts/{id}/publish`
 1. `internal/routes/routes.go` declares the route and binds `apis.RequireAuth()`.
 2. `internal/actions/posts.go#PublishPost` reads the path param and `e.Auth`,
    calls the service, and maps `services.ErrNotOwner` to a 403.
-3. `internal/services/posts.go#Publish` checks ownership and saves the record.
+3. `internal/services/posts.go#Publish` loads a `models.Post`, checks
+   `post.IsOwnedBy(...)`, and saves it.
 4. Saving fires hooks (`internal/hooks`) — e.g. the slug generator.
+
+## Models
+
+`internal/models` wraps records in typed structs via PocketBase's record
+proxy pattern (`core.BaseRecordProxy`). A model *is* its record — pass it to
+`app.Save()` directly and every hook and validation fires as usual:
+
+```go
+post, _ := models.FindPostByID(app, id)
+post.SetPublished(true)
+app.Save(post)
+```
+
+Models are optional sugar: plain `core.Record` access is always available
+(`record.GetString("title")`), and hooks receive plain records that you can
+wrap with `models.NewPost(e.Record)` when convenient. Add accessors as you
+need them rather than exhaustively mirroring every field.
 
 ## Wiring
 
@@ -56,10 +75,12 @@ Example: `POST /api/app/posts/{id}/publish`
 1. **Schema** — `make migration name=create_comments`, edit the file in
    `migrations/`, model it on the posts migration. Set API rules there.
 2. **DTOs** — add request/response structs to `internal/types`, run `make types`.
-3. **Service** — create `internal/services/comments.go` with the logic.
-4. **Action + route** — handler in `internal/actions`, declare it in
+3. **Model** (optional) — `internal/models/comment.go` if Go code touches the
+   collection's fields in more than one place.
+4. **Service** — create `internal/services/comments.go` with the logic.
+5. **Action + route** — handler in `internal/actions`, declare it in
    `internal/routes/routes.go`.
-5. **Hooks** — if the logic must also run for dashboard/CRUD writes, put it
+6. **Hooks** — if the logic must also run for dashboard/CRUD writes, put it
    in `internal/hooks` instead of the action.
-6. **Tests** — service tests + an `ApiScenario` per route (see docs/testing.md).
-7. **Seed** — extend `internal/seed` if the dev environment needs sample data.
+7. **Tests** — service tests + an `ApiScenario` per route (see docs/testing.md).
+8. **Seed** — extend `internal/seed` if the dev environment needs sample data.

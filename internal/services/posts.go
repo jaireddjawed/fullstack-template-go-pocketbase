@@ -11,6 +11,7 @@ import (
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
 
+	"github.com/jaireddjawed/fullstack-template-golang/internal/models"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/types"
 )
 
@@ -48,17 +49,17 @@ func (s *PostService) Stats() (*types.PostStats, error) {
 }
 
 // Publish marks a post as published after verifying ownership.
-func (s *PostService) Publish(postID, userID string) (*core.Record, error) {
-	post, err := s.app.FindRecordById("posts", postID)
+func (s *PostService) Publish(postID, userID string) (*models.Post, error) {
+	post, err := models.FindPostByID(s.app, postID)
 	if err != nil {
 		return nil, err
 	}
 
-	if post.GetString("owner") != userID {
+	if !post.IsOwnedBy(userID) {
 		return nil, ErrNotOwner
 	}
 
-	post.Set("published", true)
+	post.SetPublished(true)
 	if err := s.app.Save(post); err != nil {
 		return nil, err
 	}

@@ -41,6 +41,7 @@ internal/
   routes/                route declarations — like Laravel's routes/api.php
   actions/               HTTP handlers — like single-action controllers
   services/              business logic, framework-agnostic
+  models/                typed record wrappers — like Eloquent models
   hooks/                 record event hooks — like model observers
   seed/                  database seeder
   commands/              custom CLI commands (e.g. `seed`)

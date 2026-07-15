@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/pocketbase/pocketbase/core"
+
+	"github.com/jaireddjawed/fullstack-template-golang/internal/models"
 )
 
 const (
@@ -30,20 +32,19 @@ func Run(app core.App) error {
 	return nil
 }
 
-func ensureDemoUser(app core.App) (*core.Record, error) {
-	if existing, err := app.FindAuthRecordByEmail("users", DemoEmail); err == nil {
+func ensureDemoUser(app core.App) (*models.User, error) {
+	if existing, err := models.FindUserByEmail(app, DemoEmail); err == nil {
 		return existing, nil
 	}
 
-	users, err := app.FindCollectionByNameOrId("users")
+	user, err := models.CreateUser(app)
 	if err != nil {
 		return nil, err
 	}
 
-	user := core.NewRecord(users)
 	user.SetEmail(DemoEmail)
 	user.SetPassword(DemoPassword)
-	user.Set("name", "Demo User")
+	user.SetName("Demo User")
 	user.SetVerified(true)
 
 	if err := app.Save(user); err != nil {
@@ -52,7 +53,7 @@ func ensureDemoUser(app core.App) (*core.Record, error) {
 	return user, nil
 }
 
-func ensureDemoPosts(app core.App, owner *core.Record) error {
+func ensureDemoPosts(app core.App, owner *models.User) error {
 	demoPosts := []struct {
 		title     string
 		content   string
@@ -63,22 +64,21 @@ func ensureDemoPosts(app core.App, owner *core.Record) error {
 		{"An unpublished draft", "<p>Only the owner can see this one.</p>", false},
 	}
 
-	posts, err := app.FindCollectionByNameOrId("posts")
-	if err != nil {
-		return err
-	}
-
 	for _, p := range demoPosts {
 		existing, _ := app.FindFirstRecordByData("posts", "title", p.title)
 		if existing != nil {
 			continue
 		}
 
-		post := core.NewRecord(posts)
-		post.Set("title", p.title)
-		post.Set("content", p.content)
-		post.Set("published", p.published)
-		post.Set("owner", owner.Id)
+		post, err := models.CreatePost(app)
+		if err != nil {
+			return err
+		}
+
+		post.SetTitle(p.title)
+		post.SetContent(p.content)
+		post.SetPublished(p.published)
+		post.SetOwnerID(owner.Id)
 
 		// Save goes through the app so the slug hook fires too.
 		if err := app.Save(post); err != nil {

@@ -10,10 +10,10 @@ import (
 
 func TestSlugify(t *testing.T) {
 	cases := map[string]string{
-		"Hello, World!":        "hello-world",
+		"Hello, World!":         "hello-world",
 		"  spaces  everywhere ": "spaces-everywhere",
-		"Already-Slugged":      "already-slugged",
-		"数字123 mixed":          "123-mixed",
+		"Already-Slugged":       "already-slugged",
+		"数字123 mixed":           "123-mixed",
 	}
 
 	for input, want := range cases {

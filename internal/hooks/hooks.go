@@ -6,6 +6,7 @@ package hooks
 import (
 	"github.com/pocketbase/pocketbase/core"
 
+	"github.com/jaireddjawed/fullstack-template-golang/internal/models"
 	"github.com/jaireddjawed/fullstack-template-golang/internal/services"
 )
 
@@ -14,8 +15,9 @@ func Register(app core.App) {
 	// Auto-generate a slug from the title whenever a post is created
 	// without one.
 	app.OnRecordCreate("posts").BindFunc(func(e *core.RecordEvent) error {
-		if e.Record.GetString("slug") == "" {
-			e.Record.Set("slug", services.Slugify(e.Record.GetString("title")))
+		post := models.NewPost(e.Record)
+		if post.Slug() == "" {
+			post.SetSlug(services.Slugify(post.Title()))
 		}
 		return e.Next()
 	})
