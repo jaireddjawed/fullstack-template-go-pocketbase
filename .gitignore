@@ -1,0 +1,26 @@
+# PocketBase data (local sqlite db, uploads, backups)
+pb_data/
+pb_public/
+
+# Go
+/app
+/tmp
+*.test
+*.out
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# Env
+.env
+.env.local
+.env*.local
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/
