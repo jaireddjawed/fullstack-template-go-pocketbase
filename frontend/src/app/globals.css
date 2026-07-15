@@ -1,0 +1,53 @@
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  max-width: 48rem;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+nav .spacer {
+  flex: 1;
+}
+
+article {
+  padding: 1rem 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.error {
+  color: #c0392b;
+}
+
+.muted {
+  opacity: 0.65;
+  font-size: 0.9em;
+}
+
+button {
+  cursor: pointer;
+}
+
+form.stack {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 20rem;
+}
+
+form.stack input {
+  padding: 0.5rem;
+}
