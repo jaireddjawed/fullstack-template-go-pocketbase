@@ -24,4 +24,4 @@ frontend/.turbo/
 .DS_Store
 .idea/
 .vscode/
-fullstack-template
+/fullstack-template

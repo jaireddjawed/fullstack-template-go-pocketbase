@@ -1,5 +1,5 @@
 // Package seed populates the database with development data,
-// like Laravel's database seeders. Run with: go run . seed
+// like Laravel's database seeders. Run with: go run ./cmd/app seed
 package seed
 
 import (

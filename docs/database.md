@@ -3,7 +3,7 @@
 ## Migrations
 
 Schema lives in code as ordered, reversible Go migrations in `migrations/`.
-They are registered via `init()` (the blank import in `main.go`) and applied
+They are registered via `init()` (the blank import in `cmd/app/main.go`) and applied
 automatically on `serve`, or explicitly:
 
 ```sh
@@ -51,7 +51,7 @@ the migration for free.
 `internal/seed/seed.go` populates development data, exposed as a CLI command:
 
 ```sh
-make seed    # = go run . seed
+make seed    # = go run ./cmd/app seed
 ```
 
 Seeders are **idempotent** — every record is looked up before being created,

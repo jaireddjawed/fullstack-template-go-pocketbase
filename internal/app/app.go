@@ -1,5 +1,5 @@
 // Package app wires the PocketBase application together: CLI commands,
-// event hooks, and custom routes. Everything that main.go boots and that
+// event hooks, and custom routes. Everything that cmd/app/main.go boots and that
 // tests need to replicate lives behind Bind().
 package app
 
@@ -13,7 +13,7 @@ import (
 	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/routes"
 )
 
-// New builds the full PocketBase application used by main.go.
+// New builds the full PocketBase application used by cmd/app/main.go.
 func New() *pocketbase.PocketBase {
 	pb := pocketbase.New()
 

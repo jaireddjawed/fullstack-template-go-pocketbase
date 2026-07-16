@@ -8,8 +8,8 @@ fullstack-template init
   → project name / Go module path
   → frontend:  none · Next.js · React + Inertia
   → auth:      PocketBase · Clerk · WorkOS (coming soon)
-  → database:  PocketBase (SQLite) · Postgres (coming soon)
-  → extras:    Docker · email verification · shadcn/ui
+  → database:  PocketBase (SQLite)
+  → extras:    email verification · shadcn/ui
   → confirm → generate
 ```
 
@@ -34,7 +34,7 @@ Non-interactive (scripts, CI):
 ```sh
 go run ./cmd/fullstack-template init --no-input \
   --name my-app --module github.com/you/my-app \
-  --frontend next --auth clerk --extras docker,shadcn
+  --frontend next --auth clerk --extras shadcn
 ```
 
 Flags: `--name`, `--module`, `--frontend`, `--auth`, `--database`,
@@ -58,15 +58,16 @@ Steps (see `internal/scaffold/generate.go`):
 1. `git clone --depth 1 --branch <branch>` into the target directory.
 2. Strip `.git` and rewrite the Go module path everywhere
    (`.go`, `go.mod`, docs, `tygo.yaml`, TS configs).
-3. Apply extras:
-   - **Docker** — `Dockerfile` (+ frontend image for Next.js, asset-embedding
-     image for Inertia), `.dockerignore`, `docker-compose.yml`.
+3. Create Docker files:
+   - `Dockerfile` (+ frontend image for Next.js, asset-embedding image for
+     Inertia), `.dockerignore`, `docker-compose.yml`.
+4. Apply extras:
    - **Email verification** — a migration setting the users collection's
      `AuthRule` to `verified = true` (PocketBase auth only; Clerk manages
      its own verification).
    - **shadcn/ui** — no files; the post-generate checklist prints the
      `npx shadcn init` steps (requires a frontend).
-4. Fresh `git init` + initial commit, then print next steps.
+5. Fresh `git init` + initial commit, then print next steps.
 
 ## Architecture
 

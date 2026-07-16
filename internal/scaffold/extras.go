@@ -9,8 +9,6 @@ import (
 
 func applyExtra(cfg Config, extra Extra) error {
 	switch extra {
-	case ExtraDocker:
-		return writeDockerFiles(cfg)
 	case ExtraEmailVerification:
 		return writeEmailVerificationMigration(cfg)
 	case ExtraShadcn:
@@ -60,7 +58,7 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o /app .
+RUN CGO_ENABLED=0 go build -o /app ./cmd/app
 
 FROM alpine:3.21
 WORKDIR /srv
@@ -78,7 +76,7 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o /app .
+RUN CGO_ENABLED=0 go build -o /app ./cmd/app
 
 FROM alpine:3.21
 WORKDIR /srv

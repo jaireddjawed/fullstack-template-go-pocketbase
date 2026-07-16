@@ -30,13 +30,11 @@ type Database string
 
 const (
 	DatabasePocketBase Database = "pocketbase"
-	DatabasePostgres   Database = "postgres"
 )
 
 type Extra string
 
 const (
-	ExtraDocker            Extra = "docker"
 	ExtraEmailVerification Extra = "email-verification"
 	ExtraShadcn            Extra = "shadcn"
 )
@@ -63,8 +61,8 @@ var branchMatrix = map[Frontend]map[Auth]string{
 
 // Branch resolves the template branch for the chosen stack.
 func (c Config) Branch() (string, error) {
-	if c.Database == DatabasePostgres {
-		return "", fmt.Errorf("database %q is not implemented yet", c.Database)
+	if c.Database != DatabasePocketBase {
+		return "", fmt.Errorf("database %q is not implemented", c.Database)
 	}
 	if branch, ok := branchMatrix[c.Frontend][c.Auth]; ok {
 		return branch, nil
@@ -128,13 +126,11 @@ func AuthChoices(f Frontend) []Choice {
 func DatabaseChoices() []Choice {
 	return []Choice{
 		{Value: string(DatabasePocketBase), Label: "PocketBase (SQLite)", Detail: "embedded, zero-config"},
-		{Value: string(DatabasePostgres), Label: "Postgres", Detail: "coming soon", Disabled: true},
 	}
 }
 
 func ExtraChoices(f Frontend, a Auth) []Choice {
 	return []Choice{
-		{Value: string(ExtraDocker), Label: "Docker", Detail: "Dockerfile + docker-compose.yml"},
 		{
 			Value:    string(ExtraEmailVerification),
 			Label:    "Email verification",
