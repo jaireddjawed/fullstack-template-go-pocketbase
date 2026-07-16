@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,7 +30,7 @@ function hotFilePlugin(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), hotFilePlugin()],
+  plugins: [react(), tailwindcss(), hotFilePlugin()],
   resolve: {
     alias: {
       "@": path.resolve(dirname, "src"),
