@@ -40,6 +40,20 @@ make test                                    # backend tests
 - Custom app routes: `/api/app/...` (defined in `internal/routes`)
 - Demo login after seeding: `demo@example.com` / `password123`
 
+## Docker (Next.js + PocketBase)
+
+The `nextjs` branch uses one container for the Next.js app and the embedded
+Go/PocketBase server. The PocketBase data directory is a volume so records and
+uploads survive container replacement.
+
+```sh
+docker build -t fullstack-template .
+docker run --rm -p 3000:3000 -p 8090:8090 -v fullstack-pb-data:/app/pb_data fullstack-template
+```
+
+Open the app at http://localhost:3000 and the PocketBase dashboard at
+http://localhost:8090/_/.
+
 ## Project layout
 
 ```

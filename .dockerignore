@@ -1,0 +1,10 @@
+.git
+.DS_Store
+pb_data
+pb_public
+app
+tmp
+frontend/node_modules
+frontend/.next
+frontend/dist
+frontend/tsconfig.tsbuildinfo
