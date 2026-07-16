@@ -75,10 +75,12 @@ func ensureDemoPosts(app core.App, owner *models.User) error {
 			return err
 		}
 
-		post.SetTitle(p.title)
-		post.SetContent(p.content)
-		post.SetPublished(p.published)
-		post.SetOwnerID(owner.Id)
+		post.Apply(models.PostData{
+			Title:     p.title,
+			Content:   p.content,
+			Published: p.published,
+			OwnerID:   owner.Id,
+		})
 
 		// Save goes through the app so the slug hook fires too.
 		if err := app.Save(post); err != nil {

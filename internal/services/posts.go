@@ -59,7 +59,9 @@ func (s *PostService) Publish(postID, userID string) (*models.Post, error) {
 		return nil, ErrNotOwner
 	}
 
-	post.SetPublished(true)
+	data := post.Data()
+	data.Published = true
+	post.Apply(data)
 	if err := s.app.Save(post); err != nil {
 		return nil, err
 	}

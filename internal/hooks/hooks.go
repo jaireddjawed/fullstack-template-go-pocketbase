@@ -16,8 +16,10 @@ func Register(app core.App) {
 	// without one.
 	app.OnRecordCreate("posts").BindFunc(func(e *core.RecordEvent) error {
 		post := models.NewPost(e.Record)
-		if post.Slug() == "" {
-			post.SetSlug(services.Slugify(post.Title()))
+		data := post.Data()
+		if data.Slug == "" {
+			data.Slug = services.Slugify(data.Title)
+			post.Apply(data)
 		}
 		return e.Next()
 	})
