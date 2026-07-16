@@ -22,7 +22,12 @@ make generator          # builds ./fullstack-template
 ./fullstack-template init
 ```
 
-Or directly: `go run ./cmd/fullstack-template init`.
+Or directly: `go run ./cmd/fullstack-template init`. Outside a checkout,
+install it with:
+
+```sh
+go install github.com/jaireddjawed/fullstack-template-go-pocketbase/cmd/fullstack-template@latest
+```
 
 Non-interactive (scripts, CI):
 

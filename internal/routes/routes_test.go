@@ -5,7 +5,7 @@ import (
 
 	"github.com/pocketbase/pocketbase/tests"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/testutil"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/testutil"
 )
 
 // API tests use PocketBase's ApiScenario helper: it runs the request

@@ -11,8 +11,8 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/services"
-	"github.com/jaireddjawed/fullstack-template-golang/internal/types"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/services"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/types"
 )
 
 const appVersion = "0.1.0"

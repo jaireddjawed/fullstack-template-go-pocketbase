@@ -1,4 +1,4 @@
-module github.com/jaireddjawed/fullstack-template-golang
+module github.com/jaireddjawed/fullstack-template-go-pocketbase
 
 go 1.26.2
 

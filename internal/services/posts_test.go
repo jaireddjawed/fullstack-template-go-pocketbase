@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/services"
-	"github.com/jaireddjawed/fullstack-template-golang/internal/testutil"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/services"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/testutil"
 )
 
 func TestSlugify(t *testing.T) {
