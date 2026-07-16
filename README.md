@@ -4,8 +4,8 @@
 > frontend; PocketBase cookie auth. See [docs/frontend-inertia.md](docs/frontend-inertia.md).
 >
 > ```sh
-> make dev                     # backend :8090  (open this one)
-> cd frontend && npm install && npm run dev    # Vite HMR
+> cd frontend && npm install
+> make dev                     # backend :8090 + Vite HMR
 > make seed                    # demo@example.com / password123
 > ```
 
@@ -64,7 +64,8 @@ docs/                    documentation
 
 | Command | What it does |
 |---|---|
-| `make dev` | run the backend (auto-applies pending migrations) |
+| `make dev` | run the backend and Vite frontend |
+| `make backend` | run only the backend |
 | `make migration name=x` | create a new blank migration |
 | `make migrate-up` / `migrate-down` | apply / revert migrations |
 | `make seed` | seed development data (idempotent) |

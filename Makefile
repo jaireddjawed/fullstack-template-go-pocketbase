@@ -1,11 +1,20 @@
-.PHONY: dev serve build test migrate-up migrate-down migration seed types superuser
+.PHONY: dev serve backend build test migrate-up migrate-down migration seed types superuser
 
 # --- Running ---------------------------------------------------------------
 
-dev: ## Run the backend with auto-applied migrations (http://127.0.0.1:8090)
+dev: ## Run the backend + Vite frontend (open http://127.0.0.1:8090)
+	@if [ ! -d frontend/node_modules ]; then \
+		echo "frontend/node_modules is missing. Run: cd frontend && npm install"; \
+		exit 1; \
+	fi; \
+	trap 'kill 0' INT TERM EXIT; \
+	npm --prefix frontend run dev & \
 	go run . serve
 
-serve: dev
+backend: ## Run only the backend with auto-applied migrations
+	go run . serve
+
+serve: backend
 
 build: ## Build a production binary
 	go build -o app .
