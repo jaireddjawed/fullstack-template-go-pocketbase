@@ -11,7 +11,15 @@ A scaffold for full-stack applications: [PocketBase](https://pocketbase.io) used
 | `nextjs` | Next.js (separate dev server) | PocketBase (JS SDK) |
 | `nextjs-clerk` | Next.js (separate dev server) | Clerk (verified by the Go backend) |
 
-Start a new project by cloning the branch you want:
+Start a new project with the interactive generator (recommended):
+
+```sh
+make generator && ./fullstack-template init
+```
+
+It walks you through frontend / auth / database / extras, resolves the
+right branch, rewrites the module path, and applies extras like Docker —
+see [docs/generator.md](docs/generator.md). Or clone a branch directly:
 
 ```sh
 git clone -b nextjs <repo-url> my-app
