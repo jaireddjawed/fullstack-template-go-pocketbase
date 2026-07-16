@@ -21,6 +21,13 @@ the PocketBase `users` collection — so **collection API rules, relations
 Without `CLERK_SECRET_KEY` the backend still runs (with a warning), but all
 requests are anonymous.
 
+## Email verification
+
+Enable and require email verification in the Clerk dashboard's sign-up
+settings. Clerk owns the verification email, confirmation screen, and resend
+behavior on this branch; after a verified Clerk session reaches the backend,
+the provisioned PocketBase user record is marked verified automatically.
+
 ## How it works
 
 ```
