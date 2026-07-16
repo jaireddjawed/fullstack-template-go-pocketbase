@@ -1,6 +1,7 @@
 import { Collections } from "@shared/pocketbase.gen";
 import { createServerClient, currentUser } from "@/lib/server-auth";
 import PublishButton from "@/components/PublishButton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
@@ -19,24 +20,28 @@ export default async function PostsPage() {
   });
 
   return (
-    <>
+    <div className="space-y-4">
       <h1>Posts</h1>
       {posts.length === 0 && (
         <p className="muted">No posts yet — run `make seed`.</p>
       )}
       {posts.map((post) => (
-        <article key={post.id}>
-          <h2>{post.title}</h2>
-          <p className="muted">
+        <Card key={post.id}>
+          <CardHeader>
+            <CardTitle>{post.title}</CardTitle>
+            <CardDescription>
             /{post.slug} · {post.published ? "published" : "draft"} ·{" "}
             {post.created}
-          </p>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
           {post.owner === userID && !post.published && (
-            <PublishButton id={post.id} />
+            <div className="mt-4"><PublishButton id={post.id} /></div>
           )}
-        </article>
+          </CardContent>
+        </Card>
       ))}
-    </>
+    </div>
   );
 }
