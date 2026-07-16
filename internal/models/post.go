@@ -19,6 +19,19 @@ type Post struct {
 	core.BaseRecordProxy
 }
 
+// PostData is the typed representation of a posts record.
+//
+// The tags document the matching PocketBase field names. Use Data to read a
+// record and Apply to copy a complete value back before saving the Post.
+type PostData struct {
+	ID        string `pb:"id"`
+	Title     string `pb:"title"`
+	Slug      string `pb:"slug"`
+	Content   string `pb:"content"`
+	Published bool   `pb:"published"`
+	OwnerID   string `pb:"owner"`
+}
+
 // NewPost wraps an existing posts record.
 func NewPost(record *core.Record) *Post {
 	p := &Post{}
@@ -44,18 +57,29 @@ func FindPostByID(app core.App, id string) (*Post, error) {
 	return NewPost(record), nil
 }
 
-func (p *Post) Title() string          { return p.GetString("title") }
-func (p *Post) SetTitle(title string)  { p.Set("title", title) }
-func (p *Post) Slug() string           { return p.GetString("slug") }
-func (p *Post) SetSlug(slug string)    { p.Set("slug", slug) }
-func (p *Post) Content() string        { return p.GetString("content") }
-func (p *Post) SetContent(html string) { p.Set("content", html) }
-func (p *Post) Published() bool        { return p.GetBool("published") }
-func (p *Post) SetPublished(v bool)    { p.Set("published", v) }
-func (p *Post) OwnerID() string        { return p.GetString("owner") }
-func (p *Post) SetOwnerID(id string)   { p.Set("owner", id) }
+// Data returns a typed snapshot of the record fields.
+func (p *Post) Data() PostData {
+	return PostData{
+		ID:        p.Id,
+		Title:     p.GetString("title"),
+		Slug:      p.GetString("slug"),
+		Content:   p.GetString("content"),
+		Published: p.GetBool("published"),
+		OwnerID:   p.GetString("owner"),
+	}
+}
+
+// Apply copies the writable PostData fields to the record. The record ID is
+// managed by PocketBase and is intentionally not written.
+func (p *Post) Apply(data PostData) {
+	p.Set("title", data.Title)
+	p.Set("slug", data.Slug)
+	p.Set("content", data.Content)
+	p.Set("published", data.Published)
+	p.Set("owner", data.OwnerID)
+}
 
 // IsOwnedBy reports whether the post belongs to the given user id.
 func (p *Post) IsOwnedBy(userID string) bool {
-	return userID != "" && p.OwnerID() == userID
+	return userID != "" && p.Data().OwnerID == userID
 }
