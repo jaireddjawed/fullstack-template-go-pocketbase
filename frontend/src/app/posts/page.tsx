@@ -1,6 +1,7 @@
 import { Collections } from "@shared/pocketbase.gen";
 import { createServerClient } from "@/lib/server-auth";
 import PublishButton from "@/components/PublishButton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +17,19 @@ export default async function PostsPage() {
   });
 
   return (
-    <>
+    <div className="space-y-4">
       <h1>Posts</h1>
+      <Card className="border-primary/30 bg-primary/5">
+        <CardHeader>
+          <CardTitle>Protected component example</CardTitle>
+          <CardDescription>
+            This card is rendered only after the server reads a valid PocketBase auth session.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          Signed in as <strong>{pb.authStore.record?.email}</strong>.
+        </CardContent>
+      </Card>
       {posts.length === 0 && (
         <p className="muted">No posts yet — run `make seed`.</p>
       )}
@@ -34,6 +46,6 @@ export default async function PostsPage() {
           )}
         </article>
       ))}
-    </>
+    </div>
   );
 }
