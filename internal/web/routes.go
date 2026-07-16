@@ -33,6 +33,12 @@ func Register(se *core.ServeEvent) error {
 
 	pages.GET("/login", loginPage(inertia)).BindFunc(requireGuest)
 	pages.POST("/login", login(inertia)).BindFunc(requireGuest)
+	pages.GET("/signup", signupPage(inertia)).BindFunc(requireGuest)
+	pages.POST("/signup", signup(inertia)).BindFunc(requireGuest)
+	pages.GET("/verify-email", verifyEmailPage(inertia)).BindFunc(requireGuest)
+	pages.POST("/verify-email", requestVerification(inertia)).BindFunc(requireGuest)
+	pages.GET("/verify-email/confirm", confirmVerificationPage(inertia)).BindFunc(requireGuest)
+	pages.POST("/verify-email/confirm", confirmVerification(inertia)).BindFunc(requireGuest)
 	pages.POST("/logout", logout(inertia))
 
 	return nil

@@ -1,5 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import type { FormEvent } from "react";
+import { Link } from "@inertiajs/react";
 import Layout from "@/components/Layout";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ export default function Login() {
             <Button type="submit" disabled={processing}>{processing ? "Logging in…" : "Log in"}</Button>
           </form>
           <p className="mt-4 text-sm text-muted-foreground">Defaults are the seeded demo account (<code>make seed</code>).</p>
+          <p className="mt-4 text-sm">Need an account? <Link className="underline" href="/signup">Sign up</Link>{" · "}<Link className="underline" href="/verify-email">Verify email</Link></p>
         </CardContent>
       </Card>
     </Layout>

@@ -56,12 +56,22 @@ PocketBase auth in an **httpOnly cookie session** (`internal/web/middleware.go`)
 - `requireWebAuth` redirects guests to `/login` (the web equivalent of
   `apis.RequireAuth()`); `requireGuest` does the reverse.
 - `POST /logout` clears the cookie.
+- Signup sends PocketBase's verification email; unverified accounts cannot log
+  in until they confirm the emailed link.
 
 The PocketBase REST API (`/api/collections/...`) still works normally with
 header tokens — useful for realtime subscriptions or mobile clients.
 
 Set `Secure: true` on the cookie (internal/web/middleware.go) when deploying
 behind HTTPS.
+
+Set the `users` collection's verification-email template link to:
+
+```text
+http://127.0.0.1:8090/verify-email/confirm?token={TOKEN}
+```
+
+Use the deployed application origin in production.
 
 ## Adding a page
 

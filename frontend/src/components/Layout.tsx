@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Button variant="outline" onClick={() => router.post("/logout")}>Log out</Button>
           </>
         ) : (
-          <Link href="/login">Log in</Link>
+          <><Link href="/login">Log in</Link><Link href="/signup">Sign up</Link></>
         )}
       </nav>
       <main>{children}</main>

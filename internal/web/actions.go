@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/mails"
 	gonertia "github.com/romsar/gonertia/v2"
 
 	"github.com/jaireddjawed/fullstack-template-golang/internal/models"
@@ -102,6 +103,11 @@ func login(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
 				"email": "Invalid email or password.",
 			})
 		}
+		if !user.Verified() {
+			return renderError(i, e.Response, e.Request, "Auth/Login", gonertia.ValidationErrors{
+				"email": "Verify your email before logging in.",
+			})
+		}
 
 		token, err := user.NewAuthToken()
 		if err != nil {
@@ -110,6 +116,85 @@ func login(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
 
 		setAuthCookie(e.Response, token)
 		i.Redirect(e.Response, e.Request, "/")
+		return nil
+	}
+}
+
+func signupPage(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		return i.Render(e.Response, e.Request, "Auth/Signup", sharedProps(e))
+	}
+}
+
+func signup(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		form := struct{ Name, Email, Password, PasswordConfirm string }{}
+		if err := e.BindBody(&form); err != nil {
+			return err
+		}
+		if form.Email == "" || form.Password == "" || form.Password != form.PasswordConfirm {
+			return renderError(i, e.Response, e.Request, "Auth/Signup", gonertia.ValidationErrors{"email": "Provide an email and matching passwords."})
+		}
+		user, err := models.CreateUser(e.App)
+		if err != nil {
+			return err
+		}
+		user.SetEmail(form.Email)
+		user.SetPassword(form.Password)
+		user.SetName(form.Name)
+		if err := e.App.Save(user); err != nil {
+			return renderError(i, e.Response, e.Request, "Auth/Signup", gonertia.ValidationErrors{"email": "We couldn't create that account. Check your details and try again."})
+		}
+		if err := mails.SendRecordVerification(e.App, user.Record); err != nil {
+			e.App.Logger().Error("send verification email", "error", err)
+		}
+		i.Redirect(e.Response, e.Request, "/verify-email")
+		return nil
+	}
+}
+
+func verifyEmailPage(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		return i.Render(e.Response, e.Request, "Auth/VerifyEmail", sharedProps(e))
+	}
+}
+
+func requestVerification(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		form := struct{ Email string }{}
+		if err := e.BindBody(&form); err != nil {
+			return err
+		}
+		if user, err := models.FindUserByEmail(e.App, form.Email); err == nil && !user.Verified() {
+			if err := mails.SendRecordVerification(e.App, user.Record); err != nil {
+				e.App.Logger().Error("send verification email", "error", err)
+			}
+		}
+		return i.Render(e.Response, e.Request, "Auth/VerifyEmail", gonertia.Props{"success": "If an account exists for that email, a verification link is on its way."})
+	}
+}
+
+func confirmVerificationPage(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		return i.Render(e.Response, e.Request, "Auth/ConfirmEmail", gonertia.Props{"token": e.Request.URL.Query().Get("token")})
+	}
+}
+
+func confirmVerification(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		form := struct{ Token string }{}
+		if err := e.BindBody(&form); err != nil {
+			return err
+		}
+		user, err := e.App.FindAuthRecordByToken(form.Token, core.TokenTypeVerification)
+		if err != nil {
+			return renderError(i, e.Response, e.Request, "Auth/ConfirmEmail", gonertia.ValidationErrors{"token": "This verification link is invalid or has expired."})
+		}
+		user.SetVerified(true)
+		if err := e.App.Save(user); err != nil {
+			return err
+		}
+		i.Redirect(e.Response, e.Request, "/login")
 		return nil
 	}
 }
