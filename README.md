@@ -31,6 +31,14 @@ make test                                    # backend tests
 - Custom app routes: `/api/app/...` (defined in `internal/routes`)
 - Demo login after seeding: `demo@example.com` / `password123`
 
+## Email verification
+
+The built-in PocketBase `users` auth collection supports verification through
+its request and confirmation endpoints. This backend-only branch leaves the
+UI and email-template redirect to the consuming client; the `nextjs` and
+`react-inertia` branches provide complete verification-page examples. The
+seeded demo user is already verified.
+
 ## Project layout
 
 ```
