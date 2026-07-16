@@ -61,12 +61,13 @@ func postsIndex(i *gonertia.ViteInstance) func(*core.RequestEvent) error {
 		posts := make([]types.PostSummary, 0, len(records))
 		for _, record := range records {
 			post := models.NewPost(record)
+			data := post.Data()
 			posts = append(posts, types.PostSummary{
 				ID:        post.Id,
-				Title:     post.Title(),
-				Slug:      post.Slug(),
-				Content:   post.Content(),
-				Published: post.Published(),
+				Title:     data.Title,
+				Slug:      data.Slug,
+				Content:   data.Content,
+				Published: data.Published,
 				IsOwner:   post.IsOwnedBy(authID(e)),
 				Created:   post.GetDateTime("created").String(),
 			})
