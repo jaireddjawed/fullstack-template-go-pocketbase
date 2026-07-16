@@ -3,6 +3,10 @@ import Link from "next/link";
 import { currentUser } from "@/lib/server-auth";
 import { logout } from "@/lib/actions";
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Fullstack Template",
@@ -17,7 +21,7 @@ export default async function RootLayout({
   const user = await currentUser();
 
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
         <nav>
           <Link href="/">Home</Link>
