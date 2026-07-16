@@ -3,7 +3,6 @@ package migrations
 import (
 	"github.com/pocketbase/pocketbase/core"
 	m "github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 // Creates the demo "posts" collection.
@@ -42,11 +41,11 @@ func init() {
 
 		// API rules (PocketBase's row-level authorization):
 		// anyone can read published posts, owners can do everything with their own.
-		posts.ListRule = types.Pointer("published = true || owner = @request.auth.id")
-		posts.ViewRule = types.Pointer("published = true || owner = @request.auth.id")
-		posts.CreateRule = types.Pointer("@request.auth.id != '' && owner = @request.auth.id")
-		posts.UpdateRule = types.Pointer("owner = @request.auth.id")
-		posts.DeleteRule = types.Pointer("owner = @request.auth.id")
+		posts.ListRule = new("published = true || owner = @request.auth.id")
+		posts.ViewRule = new("published = true || owner = @request.auth.id")
+		posts.CreateRule = new("@request.auth.id != '' && owner = @request.auth.id")
+		posts.UpdateRule = new("owner = @request.auth.id")
+		posts.DeleteRule = new("owner = @request.auth.id")
 
 		return app.Save(posts)
 	}, func(app core.App) error {
