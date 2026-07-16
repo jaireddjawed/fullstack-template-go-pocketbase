@@ -49,7 +49,7 @@ export default function LoginPage() {
           <Button type="submit" disabled={pending}>{pending ? "Logging in…" : "Log in"}</Button>
         </form>
         <p className="mt-4 text-sm text-muted-foreground">Defaults: <code>demo@example.com</code> / <code>password123</code></p>
-        <p className="mt-4 text-sm">Need an account? <Link className="underline" href="/signup">Sign up</Link>{" · "}<Link className="underline" href="/reset-password">Forgot your password?</Link></p>
+        <p className="mt-4 text-sm">Need an account? <Link className="underline" href="/signup">Sign up</Link>{" · "}<Link className="underline" href="/verify-email">Verify email</Link>{" · "}<Link className="underline" href="/reset-password">Forgot your password?</Link></p>
       </CardContent>
     </Card>
   );

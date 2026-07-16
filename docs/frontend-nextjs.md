@@ -71,6 +71,17 @@ Use the deployed frontend origin in production. Without this template change,
 PocketBase's default email link opens its built-in dashboard rather than this
 frontend.
 
+### Verification email
+
+Set the `users` collection's verification-email template link to:
+
+```text
+http://localhost:3000/verify-email/confirm?token={TOKEN}
+```
+
+The native-auth templates require verified email addresses before they persist
+an authenticated session.
+
 ## Adding a page
 
 1. Create `src/app/<route>/page.tsx` (server component by default).

@@ -35,6 +35,11 @@ export async function login(
     throw err;
   }
 
+  if (!pb.authStore.record?.verified) {
+    pb.authStore.clear();
+    return { error: "Verify your email before logging in. You can request a new link below." };
+  }
+
   await persistAuth(pb);
   redirect("/posts");
 }
@@ -59,12 +64,14 @@ export async function signup(
 	}
 
 	try {
-		await (await createServerClient()).collection("users").create({
+		const pb = await createServerClient();
+		await pb.collection("users").create({
 			name,
 			email,
 			password,
 			passwordConfirm,
 		});
+		await pb.collection("users").requestVerification(email);
 	} catch (err) {
 		if (err instanceof ClientResponseError) {
 			return { error: "We couldn't create that account. Check your details and try again." };
@@ -72,7 +79,41 @@ export async function signup(
 		throw err;
 	}
 
-	return { success: "Account created. You can now log in." };
+	return { success: "Account created. Check your email to verify it before logging in." };
+}
+
+/** Server action: ask PocketBase to email an account-verification link. */
+export async function requestEmailVerification(
+	_prev: FormState,
+	formData: FormData,
+): Promise<FormState> {
+	const email = String(formData.get("email") ?? "").trim();
+
+	try {
+		await (await createServerClient()).collection("users").requestVerification(email);
+	} catch (err) {
+		if (!(err instanceof ClientResponseError)) throw err;
+	}
+
+	return { success: "If an account exists for that email, a verification link is on its way." };
+}
+
+/** Server action: verify an email using PocketBase's emailed token. */
+export async function confirmEmailVerification(
+	_prev: FormState,
+	formData: FormData,
+): Promise<FormState> {
+	const token = String(formData.get("token") ?? "");
+	if (!token) return { error: "This verification link is missing its token." };
+
+	try {
+		await (await createServerClient()).collection("users").confirmVerification(token);
+	} catch (err) {
+		if (err instanceof ClientResponseError) return { error: "This verification link is invalid or has expired." };
+		throw err;
+	}
+
+	return { success: "Email verified. You can now log in." };
 }
 
 /** Server action: ask PocketBase to email a password-reset link. */
