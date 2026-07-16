@@ -18,8 +18,8 @@ make generator && ./fullstack-template init
 ```
 
 It walks you through frontend / auth / database / extras, resolves the
-right branch, rewrites the module path, and applies extras like Docker —
-see [docs/generator.md](docs/generator.md). Or clone a branch directly:
+right branch, rewrites the module path, creates Docker files, and applies
+extras — see [docs/generator.md](docs/generator.md). Or clone a branch directly:
 
 ```sh
 git clone -b nextjs <repo-url> my-app
@@ -50,7 +50,7 @@ seeded demo user is already verified.
 ## Project layout
 
 ```
-main.go                  entrypoint
+cmd/app/                 app entrypoint
 migrations/              Go migrations (schema as code, ordered, reversible)
 internal/
   app/                   wires everything together (hooks, routes, commands)

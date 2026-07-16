@@ -16,7 +16,7 @@ type Logf func(format string, args ...any)
 
 // Generate creates a new project in cfg.TargetDir from the template branch
 // selected by cfg. Steps: clone → strip history → rewrite module path →
-// apply extras → fresh git init.
+// write Docker files → apply extras → fresh git init.
 func Generate(cfg Config, logf Logf) error {
 	if err := cfg.Validate(); err != nil {
 		return err
@@ -47,6 +47,11 @@ func Generate(cfg Config, logf Logf) error {
 	logf("Rewriting module %s -> %s", oldModule, cfg.Module)
 	if err := RewriteModule(cfg.TargetDir, oldModule, cfg.Module); err != nil {
 		return err
+	}
+
+	logf("Writing Docker files")
+	if err := writeDockerFiles(cfg); err != nil {
+		return fmt.Errorf("docker files: %w", err)
 	}
 
 	for _, extra := range cfg.Extras {
@@ -169,9 +174,7 @@ func NextSteps(cfg Config) []string {
 		)
 	}
 
-	if slices.Contains(cfg.Extras, ExtraDocker) {
-		steps = append(steps, "docker compose up --build      # containerized run")
-	}
+	steps = append(steps, "docker compose up --build      # containerized run")
 
 	if slices.Contains(cfg.Extras, ExtraShadcn) {
 		steps = append(steps,

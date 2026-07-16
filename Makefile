@@ -3,12 +3,12 @@
 # --- Running ---------------------------------------------------------------
 
 dev: ## Run the backend with auto-applied migrations (http://127.0.0.1:8090)
-	go run . serve
+	go run ./cmd/app serve
 
 serve: dev
 
 build: ## Build a production binary
-	go build -o app .
+	go build -o app ./cmd/app
 
 generator: ## Build the project generator TUI (./fullstack-template init)
 	go build -o fullstack-template ./cmd/fullstack-template
@@ -16,19 +16,19 @@ generator: ## Build the project generator TUI (./fullstack-template init)
 # --- Database --------------------------------------------------------------
 
 migrate-up: ## Apply all pending migrations
-	go run . migrate up
+	go run ./cmd/app migrate up
 
 migrate-down: ## Revert the last applied migration
-	go run . migrate down 1
+	go run ./cmd/app migrate down 1
 
 migration: ## Create a new blank migration: make migration name=add_comments
-	go run . migrate create "$(name)"
+	go run ./cmd/app migrate create "$(name)"
 
 seed: ## Seed the database with development data (idempotent)
-	go run . seed
+	go run ./cmd/app seed
 
 superuser: ## Create a dashboard superuser: make superuser email=you@example.com pass=changeme123
-	go run . superuser upsert "$(email)" "$(pass)"
+	go run ./cmd/app superuser upsert "$(email)" "$(pass)"
 
 # --- Types -----------------------------------------------------------------
 

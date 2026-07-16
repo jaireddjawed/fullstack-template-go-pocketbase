@@ -10,7 +10,7 @@ import (
 // Every migration has an up and a down function and runs inside a
 // transaction. New migrations are created with:
 //
-//	go run . migrate create "some_change"   (or: make migration name=some_change)
+//	go run ./cmd/app migrate create "some_change"   (or: make migration name=some_change)
 func init() {
 	m.Register(func(app core.App) error {
 		users, err := app.FindCollectionByNameOrId("users")

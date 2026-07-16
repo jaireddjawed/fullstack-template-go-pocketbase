@@ -38,14 +38,14 @@ func TestBranchMatrix(t *testing.T) {
 	}
 }
 
-func TestPostgresNotImplemented(t *testing.T) {
+func TestUnsupportedDatabase(t *testing.T) {
 	cfg := scaffold.Config{
 		Frontend: scaffold.FrontendNext,
 		Auth:     scaffold.AuthPocketBase,
-		Database: scaffold.DatabasePostgres,
+		Database: scaffold.Database("postgres"),
 	}
 	if _, err := cfg.Branch(); err == nil {
-		t.Error("expected an error for the postgres database option")
+		t.Error("expected an error for an unsupported database option")
 	}
 }
 
@@ -79,6 +79,12 @@ func TestValidate(t *testing.T) {
 	if err := badExtra.Validate(); err == nil {
 		t.Error("expected error: email-verification is not applicable with clerk auth")
 	}
+
+	removedExtra := valid
+	removedExtra.Extras = []scaffold.Extra{"docker"}
+	if err := removedExtra.Validate(); err == nil {
+		t.Error("expected error: docker is no longer a configurable extra")
+	}
 }
 
 func TestChoiceAvailability(t *testing.T) {
@@ -93,8 +99,13 @@ func TestChoiceAvailability(t *testing.T) {
 		}
 	}
 	for _, c := range scaffold.DatabaseChoices() {
-		if c.Value == string(scaffold.DatabasePostgres) && !c.Disabled {
-			t.Error("postgres should be marked as disabled")
+		if c.Value != string(scaffold.DatabasePocketBase) {
+			t.Errorf("unexpected database choice %q", c.Value)
+		}
+	}
+	for _, c := range scaffold.ExtraChoices(scaffold.FrontendNext, scaffold.AuthPocketBase) {
+		if c.Value == "docker" {
+			t.Error("docker should not be shown as an extra")
 		}
 	}
 }
@@ -159,7 +170,7 @@ func TestGenerateEndToEnd(t *testing.T) {
 		Frontend:  scaffold.FrontendNone,
 		Auth:      scaffold.AuthPocketBase,
 		Database:  scaffold.DatabasePocketBase,
-		Extras:    []scaffold.Extra{scaffold.ExtraDocker, scaffold.ExtraEmailVerification},
+		Extras:    []scaffold.Extra{scaffold.ExtraEmailVerification},
 		RepoURL:   repo,
 		TargetDir: target,
 	}
