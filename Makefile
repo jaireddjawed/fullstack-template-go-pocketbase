@@ -1,4 +1,4 @@
-.PHONY: dev serve build test migrate-up migrate-down migration seed types superuser
+.PHONY: dev serve build test migrate-up migrate-down migration seed types superuser generator
 
 # --- Running ---------------------------------------------------------------
 
@@ -9,6 +9,9 @@ serve: dev
 
 build: ## Build a production binary
 	go build -o app .
+
+generator: ## Build the project generator TUI (./fullstack-template init)
+	go build -o fullstack-template ./cmd/fullstack-template
 
 # --- Database --------------------------------------------------------------
 
