@@ -6,7 +6,7 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/spf13/cobra"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/seed"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/seed"
 )
 
 // Register adds all custom commands to the app.

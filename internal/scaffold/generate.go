@@ -60,12 +60,14 @@ func Generate(cfg Config, logf Logf) error {
 	for _, args := range [][]string{
 		{"init", "-q"},
 		{"add", "-A"},
-		{"commit", "-q", "-m", "Initial commit from fullstack-template"},
+		// -c identity fallbacks keep the commit working where git has no
+		// global identity configured (fresh machines, CI).
+		{"-c", "user.name=fullstack-template", "-c", "user.email=generator@localhost", "commit", "-q", "-m", "Initial commit from fullstack-template"},
 	} {
 		cmd := exec.Command("git", args...)
 		cmd.Dir = cfg.TargetDir
 		if out, err := cmd.CombinedOutput(); err != nil {
-			return fmt.Errorf("git %s: %w\n%s", args[0], err, out)
+			return fmt.Errorf("git %s: %w\n%s", strings.Join(args, " "), err, out)
 		}
 	}
 

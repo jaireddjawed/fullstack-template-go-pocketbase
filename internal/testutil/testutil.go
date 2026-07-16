@@ -9,10 +9,10 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tests"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/app"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/app"
 
 	// Register app migrations so the test app is created fully migrated.
-	_ "github.com/jaireddjawed/fullstack-template-golang/migrations"
+	_ "github.com/jaireddjawed/fullstack-template-go-pocketbase/migrations"
 )
 
 // NewApp returns a test app with all migrations applied and the project's

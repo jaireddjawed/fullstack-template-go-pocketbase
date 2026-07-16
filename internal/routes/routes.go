@@ -6,7 +6,7 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/actions"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/actions"
 )
 
 // Register attaches all custom routes to the router. Called from the

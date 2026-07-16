@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/app"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/app"
 
 	// Blank import registers all Go migrations with PocketBase's app
 	// migrations list so they run on `serve` / `migrate up`.
-	_ "github.com/jaireddjawed/fullstack-template-golang/migrations"
+	_ "github.com/jaireddjawed/fullstack-template-go-pocketbase/migrations"
 )
 
 func main() {

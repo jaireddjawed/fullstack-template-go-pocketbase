@@ -8,9 +8,9 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/commands"
-	"github.com/jaireddjawed/fullstack-template-golang/internal/hooks"
-	"github.com/jaireddjawed/fullstack-template-golang/internal/routes"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/commands"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/hooks"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/routes"
 )
 
 // New builds the full PocketBase application used by main.go.

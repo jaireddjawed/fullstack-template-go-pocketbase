@@ -7,7 +7,7 @@ import (
 
 	"github.com/pocketbase/pocketbase/core"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/models"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/models"
 )
 
 const (

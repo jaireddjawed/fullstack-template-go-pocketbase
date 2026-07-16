@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the generator's end-to-end test can clone
+          # template branches from the local repository.
+          fetch-depth: 0
+
+      - name: Create local branches for the generator e2e test
+        run: |
+          for branch in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+            name="${branch#origin/}"
+            [ "$name" = "HEAD" ] && continue
+            git rev-parse --verify "$name" >/dev/null 2>&1 || git branch "$name" "$branch"
+          done
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: build
+        run: go build ./...
+
+      - name: test
+        run: go test ./...
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Branches without a frontend (e.g. main) skip the rest of this job.
+      - name: Detect frontend
+        id: detect
+        run: echo "exists=$([ -f frontend/package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        if: steps.detect.outputs.exists == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: install
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: frontend
+        run: npm ci
+
+      - name: build
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: frontend
+        run: npm run build
+        env:
+          # Dummy key so Clerk-based branches can compile without secrets
+          # (pk_test_ + base64 of "example.clerk.accounts.dev$").
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk

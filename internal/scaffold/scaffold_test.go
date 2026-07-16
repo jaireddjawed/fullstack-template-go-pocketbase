@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jaireddjawed/fullstack-template-golang/internal/scaffold"
+	"github.com/jaireddjawed/fullstack-template-go-pocketbase/internal/scaffold"
 )
 
 func TestBranchMatrix(t *testing.T) {
