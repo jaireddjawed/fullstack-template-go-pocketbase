@@ -22,6 +22,17 @@ export default async function PostsPage() {
   return (
     <div className="space-y-4">
       <h1>Posts</h1>
+      <Card className="border-primary/30 bg-primary/5">
+        <CardHeader>
+          <CardTitle>Protected component example</CardTitle>
+          <CardDescription>
+            This card is rendered only after Clerk validates the session and the Go backend provisions the viewer.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          Signed in as <strong>{user?.email}</strong>.
+        </CardContent>
+      </Card>
       {posts.length === 0 && (
         <p className="muted">No posts yet — run `make seed`.</p>
       )}
