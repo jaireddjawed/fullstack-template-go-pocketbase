@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { login, type LoginState } from "@/lib/actions";
 
 const initialState: LoginState = {};
@@ -33,6 +34,11 @@ export default function LoginPage() {
       </form>
       <p className="muted">
         Defaults are the seeded demo account (<code>make seed</code>).
+      </p>
+      <p>
+        Need an account? <Link href="/signup">Sign up</Link>
+        {" · "}
+        <Link href="/reset-password">Forgot your password?</Link>
       </p>
     </>
   );

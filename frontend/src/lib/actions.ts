@@ -8,7 +8,12 @@ import { POCKETBASE_URL } from "./pocketbase";
 import { clearAuth, createServerClient, persistAuth } from "./server-auth";
 
 export interface LoginState {
-  error?: string;
+	error?: string;
+}
+
+export interface FormState {
+	error?: string;
+	success?: string;
 }
 
 /** Server action: authenticate against PocketBase and persist the session. */
@@ -35,8 +40,90 @@ export async function login(
 }
 
 export async function logout(): Promise<void> {
-  await clearAuth();
-  redirect("/");
+	await clearAuth();
+	redirect("/");
+}
+
+/** Server action: create a new PocketBase auth record. */
+export async function signup(
+	_prev: FormState,
+	formData: FormData,
+): Promise<FormState> {
+	const name = String(formData.get("name") ?? "").trim();
+	const email = String(formData.get("email") ?? "").trim();
+	const password = String(formData.get("password") ?? "");
+	const passwordConfirm = String(formData.get("passwordConfirm") ?? "");
+
+	if (password !== passwordConfirm) {
+		return { error: "Passwords do not match." };
+	}
+
+	try {
+		await (await createServerClient()).collection("users").create({
+			name,
+			email,
+			password,
+			passwordConfirm,
+		});
+	} catch (err) {
+		if (err instanceof ClientResponseError) {
+			return { error: "We couldn't create that account. Check your details and try again." };
+		}
+		throw err;
+	}
+
+	return { success: "Account created. You can now log in." };
+}
+
+/** Server action: ask PocketBase to email a password-reset link. */
+export async function requestPasswordReset(
+	_prev: FormState,
+	formData: FormData,
+): Promise<FormState> {
+	const email = String(formData.get("email") ?? "").trim();
+
+	try {
+		await (await createServerClient()).collection("users").requestPasswordReset(email);
+	} catch (err) {
+		if (!(err instanceof ClientResponseError)) {
+			throw err;
+		}
+	}
+
+	// Do not reveal whether an account exists for the submitted address.
+	return {
+		success: "If an account exists for that email, a password-reset link is on its way.",
+	};
+}
+
+/** Server action: set a new password using the reset token from PocketBase. */
+export async function confirmPasswordReset(
+	_prev: FormState,
+	formData: FormData,
+): Promise<FormState> {
+	const token = String(formData.get("token") ?? "");
+	const password = String(formData.get("password") ?? "");
+	const passwordConfirm = String(formData.get("passwordConfirm") ?? "");
+
+	if (!token) {
+		return { error: "This password-reset link is missing its token." };
+	}
+	if (password !== passwordConfirm) {
+		return { error: "Passwords do not match." };
+	}
+
+	try {
+		await (await createServerClient())
+			.collection("users")
+			.confirmPasswordReset(token, password, passwordConfirm);
+	} catch (err) {
+		if (err instanceof ClientResponseError) {
+			return { error: "This password-reset link is invalid or has expired." };
+		}
+		throw err;
+	}
+
+	return { success: "Password updated. You can now log in." };
 }
 
 /** Server action: call the custom Go endpoint with the user's token. */

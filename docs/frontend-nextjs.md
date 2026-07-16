@@ -50,10 +50,26 @@ The SDK's auth store is serialized into an httpOnly `pb_auth` cookie so
 - `src/middleware.ts` redirects guests away from `/posts` (presence check
   only; the token is actually validated by PocketBase on use).
 - `logout` deletes the cookie.
+- `signup` creates a `users` auth record, and the reset-password pages call
+  PocketBase's request and confirmation endpoints.
 
 Client components that need PocketBase directly (e.g. realtime
 subscriptions) can use `createClient()` — but then auth must be established
 client-side too; prefer server components/actions for anything sensitive.
+
+### Password-reset email
+
+Configure SMTP and the `users` collection's password-reset email template in
+the PocketBase dashboard. Point its reset link at the frontend confirmation
+page, preserving PocketBase's `{TOKEN}` placeholder:
+
+```text
+http://localhost:3000/reset-password/confirm?token={TOKEN}
+```
+
+Use the deployed frontend origin in production. Without this template change,
+PocketBase's default email link opens its built-in dashboard rather than this
+frontend.
 
 ## Adding a page
 

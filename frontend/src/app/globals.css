@@ -30,7 +30,11 @@ article {
 }
 
 .error {
-  color: #c0392b;
+	color: #c0392b;
+}
+
+.success {
+	color: #27803a;
 }
 
 .muted {

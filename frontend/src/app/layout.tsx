@@ -31,7 +31,10 @@ export default async function RootLayout({
               </form>
             </>
           ) : (
-            <Link href="/login">Log in</Link>
+            <>
+              <Link href="/login">Log in</Link>
+              <Link href="/signup">Sign up</Link>
+            </>
           )}
         </nav>
         <main>{children}</main>
