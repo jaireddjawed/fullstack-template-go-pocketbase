@@ -4,6 +4,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -26,6 +27,10 @@ const (
 // dev mode when frontend/.hot exists (assets served by the Vite dev server),
 // production mode otherwise (hashed assets resolved via dist/manifest.json).
 func NewInertia() (*gonertia.ViteInstance, error) {
+	if !HasFrontendAssets() {
+		return nil, fmt.Errorf("frontend assets unavailable: run `cd frontend && npm install`, then `make dev`, or build assets with `cd frontend && npm run build`")
+	}
+
 	base, err := gonertia.NewFromFile(RootTemplate)
 	if err != nil {
 		return nil, err
@@ -39,10 +44,24 @@ func NewInertia() (*gonertia.ViteInstance, error) {
 	)
 }
 
+// HasFrontendAssets reports whether gonertia can render asset tags without
+// failing mid-response.
+func HasFrontendAssets() bool {
+	return hasHotFile() || HasBuild()
+}
+
 // HasBuild reports whether a production frontend build exists.
 func HasBuild() bool {
-	_, err := os.Stat(BuildDir)
-	return err == nil
+	return fileExists(BuildDir+"/manifest.json") || fileExists(BuildDir+"/.vite/manifest.json")
+}
+
+func hasHotFile() bool {
+	return fileExists(HotFile)
+}
+
+func fileExists(path string) bool {
+	info, err := os.Stat(path)
+	return err == nil && !info.IsDir()
 }
 
 // renderError re-renders a component with Inertia validation errors

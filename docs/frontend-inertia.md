@@ -5,19 +5,27 @@ This branch is a **monolith**: the Go backend renders the React frontend via
 adapter. Pages get their data as props from Go — no client-side API calls,
 no client router.
 
-## Running in development
+## Running in Development
 
-Two processes:
+Install frontend dependencies once:
 
 ```sh
-make dev                 # Go backend on http://127.0.0.1:8090
-cd frontend && npm run dev   # Vite dev server (HMR)
+cd frontend && npm install
 ```
 
-Open **http://127.0.0.1:8090** (the Go server — not the Vite port). While
-Vite runs it writes `frontend/.hot` (Laravel-style hot file); gonertia sees
-it and points asset tags at the dev server for HMR. Stop Vite and the
-backend falls back to the last production build in `frontend/dist`.
+Then start both the Go backend and Vite:
+
+```sh
+make dev
+```
+
+Open **http://127.0.0.1:8090** (the Go server, not the Vite port). Vite writes
+`frontend/.hot` while it runs; gonertia sees it and points asset tags at the
+dev server for HMR.
+
+Use `make backend` only when Vite is already running separately or after a
+production build exists in `frontend/dist`. Without a hot file or build
+manifest, web routes stay disabled instead of returning partial blank HTML.
 
 First run: `make seed`, then log in with `demo@example.com` / `password123`.
 
