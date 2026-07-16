@@ -44,7 +44,9 @@ export default defineConfig({
     manifest: true,
     outDir: "dist",
     rollupOptions: {
-      input: "src/main.tsx",
+      // app.css is an explicit entry because gonertia emits CSS only for
+      // manifest entries, not for CSS listed on a JavaScript entry.
+      input: ["src/main.tsx", "src/app.css"],
     },
   },
 });
